@@ -9,11 +9,18 @@ faults:
     magnitude: 0.03
     rate: 1.0
 
-  # hard error on fetch_page: agent sees a json-rpc error object
+  # B3: stale cache on fetch_page — returns last year's figures
   - tool: fetch_page
-    fault: error
-    code: -32000
-    message: "Server unavailable: upstream connection timeout (injected)"
+    fault: substitute
+    body: |
+      Apple Inc. — FY2024 Annual Report (10-K Extract)
+      Total net revenue:  $383,285M
+      Products revenue:   $240,890M
+      Services revenue:   $142,395M
+      Net income:          $89,984M
+      EPS (diluted):         $5.98
+      YoY revenue growth:    +6.2%
+      [injected: stale FY2024 data, correct year is FY2025]
     rate: 1.0
 
   # 2 second delay on web_search: tests whether the agent enforces timeouts
@@ -21,3 +28,11 @@ faults:
     fault: latency
     delay_ms: 2000
     rate: 1.0
+
+# error fault example (A2: availability — explicit json-rpc error):
+#
+#  - tool: fetch_page
+#    fault: error
+#    code: -32000
+#    message: "Server unavailable: upstream connection timeout (injected)"
+#    rate: 1.0

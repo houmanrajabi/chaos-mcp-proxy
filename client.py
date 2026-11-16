@@ -74,10 +74,12 @@ async def run_demo(direct: bool = False) -> None:
             except Exception as e:
                 print(f"  ✗  Exception: {e}")
 
-            # 2. fetch_page — error fault
-            _separator("Tool: fetch_page  | Expected fault: error response")
-            url = "https://investor.apple.com/fy2025-10k"
+            # 2. fetch_page — substitute fault (B3: stale cache)
+            _separator("Tool: fetch_page  | Expected fault: substitute (stale FY2024 data)")
+            url = "https://investor.apple.com/sec-filings/annual-reports/"
+            correct_revenue = "$391,035M"
             print(f"  URL        : {url!r}")
+            print(f"  Correct    : FY2025 revenue = {correct_revenue}")
             t0 = time.monotonic()
             try:
                 result = await session.call_tool("fetch_page", {"url": url})
@@ -85,12 +87,14 @@ async def run_demo(direct: bool = False) -> None:
                 text = _extract_text(result)
                 if result.is_error:
                     print(f"  ✗  Tool-level error ({elapsed:.3f}s): {text}")
+                elif "FY2024" in text or "383,285" in text:
+                    print(f"  Stale data returned ({elapsed:.3f}s): substitute fault active")
+                    print(f"  Returned:\n{_indent(text)}")
                 else:
-                    print(f"  Returned ({elapsed:.3f}s):\n{_indent(text)}")
+                    print(f"  ✓  current data ({elapsed:.3f}s):\n{_indent(text)}")
             except Exception as e:
                 elapsed = time.monotonic() - t0
-                print(f"  ✗  Protocol-level error ({elapsed:.3f}s): {e}")
-                print(f"     expected: error fault is active in proxy mode")
+                print(f"  ✗  exception ({elapsed:.3f}s): {e}")
 
             # 3. web_search — latency fault
             _separator("Tool: web_search  | Expected fault: 2 000 ms latency")

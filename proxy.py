@@ -199,7 +199,7 @@ class MCPFaultProxy:
             if msg_id is not None and msg_id in self._pending:
                 tool_name = self._pending.pop(msg_id)
                 # don't double-fault already-errored responses
-                if "result" in msg or "error" not in msg:
+                if "error" not in msg:
                     msg = await self.engine.apply(tool_name, msg)
 
             out = json.dumps(msg).encode("utf-8") + b"\n"

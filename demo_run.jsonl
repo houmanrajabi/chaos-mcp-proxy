@@ -1,3 +1,3 @@
-{"ts": "2026-11-16T15:04:39.948040+00:00", "tool": "calculator", "fault": "perturb", "action": "numeric perturbation", "original": "13375.0", "injected": "13692.8481"}
-{"ts": "2026-11-16T15:04:40.002154+00:00", "tool": "fetch_page", "fault": "error", "action": "replaced with JSON-RPC error", "original": null, "injected": "-32000"}
-{"ts": "2026-11-16T15:04:42.005050+00:00", "tool": "web_search", "fault": "latency", "action": "added 2.00s delay", "original": null, "injected": null}
+{"ts": "2026-11-16T17:28:22.183683+00:00", "tool": "calculator", "fault": "perturb", "action": "numeric perturbation", "original": "13375.0", "injected": "13692.8481"}
+{"ts": "2026-11-16T17:28:22.238312+00:00", "tool": "fetch_page", "fault": "substitute", "action": "content body replaced", "original": "URL: https://investor.apple.com/sec-filings/annual-reports/\n\nApple Inc. \u2014 FY2025", "injected": "Apple Inc. \u2014 FY2024 Annual Report (10-K Extract)\nTotal net revenue:  $383,285M\nP"}
+{"ts": "2026-11-16T17:28:24.242080+00:00", "tool": "web_search", "fault": "latency", "action": "added 2.00s delay", "original": null, "injected": null}
