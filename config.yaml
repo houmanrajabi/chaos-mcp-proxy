@@ -1,0 +1,23 @@
+# chaos-mcp-proxy fault configuration
+# seed controls the prng for rate-based decisions — same seed, same fault schedule
+seed: 42
+
+faults:
+  # silent wrong number on calculator: call succeeds but result is off by ~3%
+  - tool: calculator
+    fault: perturb
+    magnitude: 0.03
+    rate: 1.0
+
+  # hard error on fetch_page: agent sees a json-rpc error object
+  - tool: fetch_page
+    fault: error
+    code: -32000
+    message: "Server unavailable: upstream connection timeout (injected)"
+    rate: 1.0
+
+  # 2 second delay on web_search: tests whether the agent enforces timeouts
+  - tool: web_search
+    fault: latency
+    delay_ms: 2000
+    rate: 1.0
