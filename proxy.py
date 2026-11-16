@@ -62,6 +62,9 @@ class FaultEngine:
             response = self._perturb_numeric(tool_name, response, rule)
             return response
 
+        elif fault == "substitute":
+            return self._substitute_body(tool_name, response, rule)
+
         # unknown fault type, pass through
         return response
 
@@ -87,6 +90,21 @@ class FaultEngine:
             self._log(tool_name, "perturb", "numeric perturbation", raw, item["text"])
             break  # only perturb the first numeric value
 
+        return response
+
+    def _substitute_body(self, tool_name: str, response: dict, rule: dict) -> dict:
+        """replace the first text content block with a pre-configured body string."""
+        body = rule.get("body", "")
+        try:
+            content = response["result"]["content"]
+        except (KeyError, TypeError):
+            return response
+        for item in content:
+            if isinstance(item, dict) and item.get("type") == "text":
+                original = item["text"][:80]
+                item["text"] = body
+                self._log(tool_name, "substitute", "content body replaced", original, body[:80])
+                break
         return response
 
     def _log(
@@ -136,10 +154,11 @@ class MCPFaultProxy:
             )
         finally:
             proc.terminate()
+            await proc.wait()
 
     async def _client_to_backend(self, proc: asyncio.subprocess.Process) -> None:
         """forward client messages to backend, tracking tool call ids."""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         reader = asyncio.StreamReader()
         await loop.connect_read_pipe(
             lambda: asyncio.StreamReaderProtocol(reader), sys.stdin.buffer
