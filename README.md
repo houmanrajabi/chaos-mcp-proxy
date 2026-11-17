@@ -40,6 +40,7 @@ uv run python proxy.py --config config.yaml -- python server.py
 Edit `config.yaml` to change which tools are faulted and how. Three fault types:
 
 - `perturb` — multiplies the first numeric result by a Gaussian factor
+- `substitute` — replaces the response's text content block with a pre-stored body string
 - `error` — replaces the response with a JSON-RPC error object
 - `latency` — sleeps before forwarding the response
 
